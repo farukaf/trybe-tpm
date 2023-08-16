@@ -2,16 +2,16 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "Node.js: debug register-api",
+        "name": "Node.js: debug new-user-consumer",
         "type": "node-terminal",
         "request": "launch",
         "command": "npm run dev"
       },
       {
-        "name": "Node.js: debug register-api",
+        "name": "Node.js: debug new-user-consumer",
         "type": "chrome",
         "request": "launch",
-        "url": "http://localhost:3001"
+        "url": "http://localhost:3002"
       },
       {
         "name": "Node.js: debug full stack",
