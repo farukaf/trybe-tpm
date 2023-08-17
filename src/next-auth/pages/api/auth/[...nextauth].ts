@@ -11,7 +11,6 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token }) {
-      token.userRole = "admin"
       authEvent.register(token, "login");
       return token
     },
