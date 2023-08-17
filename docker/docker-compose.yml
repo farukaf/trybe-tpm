@@ -4,16 +4,16 @@ services:
   
   rabbitmq-query-bus:
     image: rabbitmq:3-management
-    container_name: trybe-git-score-rabbit-zika
+    container_name: trybe-git-score-rabbit
     ports:
       - "5672:5672"
       - "15672:15672"
     networks:
-      - zika-network
+      - trybe-network
 
   mongo:
     image: mongo
-    container_name: trybe-git-score-mongo-zika
+    container_name: trybe-git-score-mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: desenvolvedor
       MONGO_INITDB_ROOT_PASSWORD: zikaMottu7000
@@ -22,12 +22,12 @@ services:
     volumes:
       - mongo-volume:/data/db
     networks:
-      - zika-network
+      - trybe-network
   
 volumes: 
     mongo-volume:
         driver: local 
 
 networks: 
-  zika-network:
+  trybe-network:
     driver: bridge

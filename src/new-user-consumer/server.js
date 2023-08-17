@@ -2,8 +2,10 @@ require('dotenv').config({ path: `.env.local` })
 const express = require("express");
 const bodyParser = require('body-parser');
 const eventService = require("./services/auth-event-service");
+const userSubscription = require("./services/user-subscription")
 
 eventService.start();
+userSubscription.start();
 
 const app = express();
 var jsonParser = bodyParser.json();

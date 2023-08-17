@@ -1,13 +1,15 @@
 const amqplib = require("amqplib");
+const userSubscription = require("./user-subscription")
 
 const common_queue_options = { durable: true, noAck: true };
 const common_exchange_options = { durable: false };
 let connection;
 let channel;
 
-const consumeLogin = (msg) => {
+const consumeLogin = async (msg) => {
   let msgObj = JSON.parse(msg.content.toString());
-  console.log(msgObj);
+  await userSubscription.subscribe(msgObj);
+  channel.ack(msg)
 };
 
 (async () => {
