@@ -1,0 +1,6 @@
+Acessando o mysql do terminal docker
+
+mysql -u root -p db_user
+Enter password:
+
+mysql> select * from User;

@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  
+  user-app:
+    image: trybe/user-app:latest
+    container_name: user-app
+    build:
+      context: ./user-app
+      dockerfile: ./Dockerfile
+    dns:
+      - 8.8.8.8
+    ports:
+      - "5505:5505"
+    environment: 
+      - ENVIRONMENT=Docker
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=Trybe7000
+    networks:
+      - trybe-network
+    volumes:
+      - ~/.config/:/root/.config
+    depends_on:
+      - db
+      
+  db:
+    image: mysql  
+    container_name: mysql
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: Trybe7000
+    ports:
+      - '3306:3306'
+    volumes:
+      - db:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - trybe-network
+
+volumes:
+  db:
+    driver: local
+    
+networks: 
+  trybe-network:
+    driver: bridge
