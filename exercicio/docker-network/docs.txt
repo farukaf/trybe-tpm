@@ -4,3 +4,33 @@ mysql -u root -p db_user
 Enter password:
 
 mysql> select * from User;
+
+
+
+Criar ambiente pelo terminal
+
+##Criar banco mysql
+docker run -d --name mysqltbl -e MYSQL_ROOT_PASSWORD='trybeM0ttu' -it mysql 
+
+##Criar aplicação a partir do dockerfile
+# Abrir o terminal na pasta que tem o Dockerfile e o user.py
+ docker build .
+## Vai ser realizado o build e gerado uma imagem com um nome aleatorio
+# Ex: => => writing image sha256:c2af5d8f50d5bdc228b84bfb6ded0070d04bc385a35a6724d9d1e71914e6703c
+# EX: => Successfully built a3e628814c67
+
+##Rode o comando abaixo para criar o container
+docker run -d --name userapp -p 3000:3000 c2af5d8f50d5bdc228b84bfb6ded0070d04bc385a35a6724d9d1e71914e6703c 
+
+##Crie uma network
+docker network create -d bridge cursonetwork
+
+##conectar os containers na network
+docker network connect cursonetwork mysqltbl
+docker network connect cursonetwork userapp
+
+
+##rode novamente o userapp
+docker start userapp
+
+
