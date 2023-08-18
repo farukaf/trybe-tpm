@@ -23,10 +23,26 @@ services:
       - mongo-volume:/data/db
     networks:
       - trybe-network
+      
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    ports:
+      - '8086:8086'
+    volumes:
+      - influxdb-storage:/var/lib/influxdb
+    environment:
+      - INFLUXDB_DB=db0
+      - INFLUXDB_ADMIN_USER=desenvolvedor
+      - INFLUXDB_ADMIN_PASSWORD=zikaMottu7000
+    networks:
+      - trybe-network
   
 volumes: 
     mongo-volume:
         driver: local 
+    influxdb-storage:
+        driver: local     
 
 networks: 
   trybe-network:

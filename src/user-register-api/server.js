@@ -22,4 +22,4 @@ app.post("/event", jsonParser, (req, res) => {
   res.send("OK");
 });
 
-app.listen(3001, () => console.log("Register Api is listening on port 3001."));
+app.listen(3001, () => console.log("User Register Api is listening on port 3001."));

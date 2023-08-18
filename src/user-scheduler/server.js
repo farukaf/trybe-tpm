@@ -20,4 +20,4 @@ app.post("/feed-users", jsonParser, async (req, res) => {
   res.send("OK");
 });
 
-app.listen(3003, () => console.log("Register Api is listening on port 3003."));
+app.listen(3003, () => console.log("User Scheduler is listening on port 3003."));

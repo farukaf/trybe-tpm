@@ -1,12 +1,14 @@
 const amqplib = require("amqplib");
+const userFeedService = require("./user-feed-service")
 
 const common_queue_options = { durable: true, noAck: true };
 const common_exchange_options = { durable: false };
 let connection;
 let channel;
 
-const consumeLogin = async (msg) => {
+const consumeEvent = async (msg) => {
   let msgObj = JSON.parse(msg.content.toString());
+  await userFeedService.process(msgObj);
   channel.ack(msg)
 };
 
@@ -20,11 +22,11 @@ const consumeLogin = async (msg) => {
     common_exchange_options
   );
   channel.assertQueue(process.env.QUEUE_NAME, common_queue_options);
-  channel.bindQueue(process.env.QUEUE_NAME, process.env.EXCHANGE_NAME, "login");
+  channel.bindQueue(process.env.QUEUE_NAME, process.env.EXCHANGE_NAME, "feed");
 
   channel.qos(1, false);
 
-  //channel.consume(process.env.QUEUE_NAME, consumeLogin);
+  channel.consume(process.env.QUEUE_NAME, consumeEvent);
 })();
 
 exports.start = function () {};
