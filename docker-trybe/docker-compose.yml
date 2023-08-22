@@ -26,7 +26,7 @@ services:
       
   influxdb:
     image: influxdb:latest
-    container_name: influxdb
+    container_name: trybe-git-score-influxdb
     ports:
       - '8086:8086'
     volumes:

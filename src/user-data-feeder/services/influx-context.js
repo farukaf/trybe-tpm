@@ -1,6 +1,6 @@
 const { InfluxDB, Point } = require("@influxdata/influxdb-client");
 
-const measurements = { commits: "commits", pullrequests: "pullrequests" };
+const measurements = { commits: "commits", pullrequests: "pullrequests", test: "test" };
 
 const token = process.env.INFLUXDB_TOKEN;
 const url = `http://${process.env.INFLUX_HOST}:${process.env.INFLUX_PORT}`; 
@@ -9,7 +9,25 @@ const precision = "ns";
 const client = new InfluxDB({ url, token });
 
 exports.measurements = measurements;
-exports.publish = async function (measurement, user, repo) {
+
+exports.publish = async function (measurement, points) {
+  let writeClient = client.getWriteApi(
+    process.env.INFLUX_ORG,
+    process.env.INFLUX_BUCKETNAME,
+    precision
+  );
+  points.forEach((p) => { 
+    let point = new Point(measurement)
+      .tag("username", p.username);
+
+    writeClient.writePoint(point);
+  });
+
+  writeClient.flush();
+};
+
+
+exports.publishTest = async function (measurement, user) {
   let writeClient = client.getWriteApi(
     process.env.INFLUX_ORG,
     process.env.INFLUX_BUCKETNAME,
@@ -17,8 +35,7 @@ exports.publish = async function (measurement, user, repo) {
   );
 
   let point = new Point(measurement)
-    .tag("repo", repo)
-    .stringField("user", user);
+    .tag("user", user);
   
   writeClient.writePoint(point);
   writeClient.flush()
