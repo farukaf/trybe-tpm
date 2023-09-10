@@ -1,0 +1,89 @@
+version: '3.9'
+
+services:
+
+  # next-auth aplication inside the folder src
+  next-auth:
+    build: ../src/next-auth
+    container_name: next-auth
+    ports:
+      - "3000:3000"
+    networks:
+      - trybe-network
+    depends_on: 
+      - user-register-api
+    restart: on-failure
+    environment:
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=82f391ddec0d10fe40658334d0851f6a
+      - GITHUB_ID=886d0a04a577c08edfb2
+      - GITHUB_SECRET=20d26d8c985c8b2bdc305e65ca3ec588e06c4636
+      - EVENT_API=http://user-register-api:3001/event
+
+  # user-register-api aplication inside the folder src
+  user-register-api:
+    build: ../src/user-register-api
+    container_name: user-register-api
+    ports:
+      - "3001:3001"
+    networks:
+      - trybe-network
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: on-failure
+    environment:
+      - RABBITMQ_CONNSTR=amqp://guest:guest@rabbitmq:5672/
+      - EXCHANGE_NAME=user-event
+
+  # The dependencies
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: trybe-git-score-rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    networks:
+      - trybe-network
+
+  mongo:
+    image: mongo
+    container_name: trybe-git-score-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: desenvolvedor
+      MONGO_INITDB_ROOT_PASSWORD: zikaMottu7000
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-volume:/data/db
+    networks:
+      - trybe-network
+      
+  influxdb:
+    image: influxdb:latest
+    container_name: trybe-git-score-influxdb
+    ports:
+      - '8086:8086'
+    volumes:
+      - influxdb-storage:/var/lib/influxdb
+    environment:
+      - INFLUXDB_DB=db0
+      - INFLUXDB_ADMIN_USER=desenvolvedor
+      - INFLUXDB_ADMIN_PASSWORD=zikaMottu7000
+    networks:
+      - trybe-network
+  
+volumes: 
+    mongo-volume:
+        driver: local 
+    influxdb-storage:
+        driver: local     
+
+networks: 
+  trybe-network:
+    driver: bridge

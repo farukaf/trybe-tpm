@@ -5,6 +5,7 @@ let connection;
 let channel;
 
 (async () => {
+  console.log("Connecting to RabbitMQ " + process.env.RABBITMQ_CONNSTR);
   connection = await amqplib.connect(process.env.RABBITMQ_CONNSTR);
   channel = await connection.createConfirmChannel();
 
