@@ -10,17 +10,14 @@ const getUsername = async (sub) => {
   let result = await githubApi.getUserData(sub);
   return result;
 };
-
-getPoints = (contributions) => {
-
-
-}
+ 
 
 const process = async (user) => {
-  let username = await getUsername(user.sub);
-  let contributions = await getContributions(username);
-  let points = getPoints(contributions);
-  await influxContext.publish(points);
+  let username = user.login || await getUsername(user.sub);
+  if(!username) return;
+  let contributions = await getContributions(username, user.access_token); 
+  if(!contributions) return;
+  await influxContext.publish(contributions,username);
 };
 
 

@@ -8,11 +8,7 @@ const app = express();
 var jsonParser = bodyParser.json();
 //eventService.start();
 
-app.get("/", async (req, res) => {
-  await influxContext.publishTest(
-    influxContext.measurements.test,
-    "farukaf"
-  );
+app.get("/", async (req, res) => { 
   res.send("Ok");
 });
 

@@ -1,42 +1,41 @@
 const { InfluxDB, Point } = require("@influxdata/influxdb-client");
 
 const token = process.env.INFLUXDB_TOKEN;
-const url = `http://${process.env.INFLUX_HOST}:${process.env.INFLUX_PORT}`; 
-const precision = "ns";
+const url = `http://${process.env.INFLUX_HOST}:${process.env.INFLUX_PORT}`;
 
-const client = new InfluxDB({ url, token });
+const client = new InfluxDB({
+  url: url,
+  token: token,
+});
 
-exports.measurements = { commits: "commits", pullrequests: "pullrequests", test: "test" };
-
-exports.publish = async function (measurement, points) {
-  let writeClient = client.getWriteApi(
+exports.publish = async (data, username) => {
+  const writeAPi = client.getWriteApi(
     process.env.INFLUX_ORG,
-    process.env.INFLUX_BUCKETNAME,
-    precision
+    process.env.INFLUX_BUCKETNAME
   );
-  points.forEach((p) => { 
-    let point = new Point(measurement)
-      .tag("username", p.username);
+  // Create a new Point and add GitHub activity data
+  const point = new Point("github_activity")
+    .tag("github_user", username)
+    .floatField(
+      "totalContributions",
+      data.contributionCalendar.totalContributions || 0
+    )
+    .floatField("totalIssueContributions", data.totalIssueContributions)
+    .floatField(
+      "totalPullRequestContributions",
+      data.totalPullRequestContributions
+    )
+    .floatField("totalCommitContributions", data.totalCommitContributions)
+    .floatField(
+      "totalRepositoryContributions",
+      data.totalRepositoryContributions
+    );
 
-    writeClient.writePoint(point);
+  console.log(point);
+
+  writeAPi.writePoint(point);
+
+  writeAPi.close().then(() => {
+    console.log(`Finished writing point to InfluxDB to user ${username}`);
   });
-
-  writeClient.flush();
-};
-
-
-exports.publishTest = async function (measurement, user) {
-  let writeClient = client.getWriteApi(
-    process.env.INFLUX_ORG,
-    process.env.INFLUX_BUCKETNAME,
-    precision
-  );
-
-  let point = new Point(measurement)
-    .tag("user", user)
-    .stringField("user", user);
-  
-  writeClient.writePoint(point);
-  writeClient.flush()
- 
 };
