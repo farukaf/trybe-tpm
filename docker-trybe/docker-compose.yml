@@ -37,7 +37,16 @@ services:
       - INFLUXDB_ADMIN_PASSWORD=zikaMottu7000
     networks:
       - trybe-network
-  
+   
+  redis:
+    image: redis
+    container_name: trybe-git-score-redis
+    ports:
+      - "6379:6379"
+    command: redis-server
+    networks:
+      - trybe-network
+ 
 volumes: 
     mongo-volume:
         driver: local 
