@@ -13,7 +13,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, account, profile, session }) {   
       token.login = (profile as any)?.login || token.login || "";
       token.access_token = account?.access_token || token.access_token || "";  
-      console.log({token})
+      //console.log({token})
       await authEvent.register(token, "login");
       return token;
     },

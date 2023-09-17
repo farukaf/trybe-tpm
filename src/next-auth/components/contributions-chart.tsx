@@ -3,9 +3,11 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  Tooltip,
   PointElement,
   LineElement,
+  Title,
+  Tooltip,
+  Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
@@ -14,7 +16,9 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
-  Tooltip
+  Title,
+  Tooltip,
+  Legend
 );
 
 type ContributionsData = {
@@ -29,50 +33,42 @@ type Props = {
 function ContributionsChart({ contributions }: Props) {
   if (!contributions || !contributions.length) return;
 
-  const labels = contributions.map((contribution) => contribution.date);
+  const labels = contributions.map((contribution) => {
+    const dt = new Date(contribution.date);
+    const year = dt.getFullYear().toString().slice(-2); // Get the last two digits of the year
+    const month = String(dt.getMonth() + 1).padStart(2, "0"); // Add 1 to month since it's 0-based
+    const day = String(dt.getDate()).padStart(2, "0");
+
+    return `${month}-${day}`;
+  });
+ 
   const totalContributions = contributions.map(
     (contribution) => contribution.totalContributions
   );
 
   const data = {
-    label: labels,
+    labels: labels,
     datasets: [
       {
+        label: "Contribuições Totais",
         data: totalContributions,
-        borderColor: "rgba(75, 192, 192, 1)",
-      },
-    ],
+        fill: true,
+        backgroundColor: "rgba(0,177,49, 0.3)",
+        borderColor: "rgba(0,177,49, 1)",
+      } 
+    ], 
   };
 
+  console.log(JSON.stringify(data));
   const options = {
     maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-    elements: {
-      point: {
-        radius: 0,
-        hitRadius: 0,
-      },
-      line: {
-        tension: 0.1,
-        borderWidth: 2,
-        borderColor: "rgba(75, 192, 192, 1)",
-        fill: "start",
-        backgroundColor: "rgba(75, 192, 192, 0.3)",
-      },
-    },
+    responsive: true,
+    aspectRatio: 3,
   };
 
   return (
     <div>
-      <Line
-        data={data}        
-        options={options}
-        height={300} 
-      />
+      <Line data={data} options={options} height={300} />
     </div>
   );
 }

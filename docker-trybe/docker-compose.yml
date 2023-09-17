@@ -35,6 +35,13 @@ services:
       - INFLUXDB_DB=db0
       - INFLUXDB_ADMIN_USER=desenvolvedor
       - INFLUXDB_ADMIN_PASSWORD=zikaMottu7000
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=desenvolvedor
+      - DOCKER_INFLUXDB_INIT_PASSWORD=zikaMottu7000
+      - DOCKER_INFLUXDB_INIT_ORG=trybe-mottu
+      - DOCKER_INFLUXDB_INIT_BUCKET=github
+      - DOCKER_INFLUXDB_INIT_RETENTION=1w
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=QklD0zXCnivcKz9kdSIALLitt-OUschO5-8XeBEX0v3LzVkIKSa7mnDPCQcy7rva1o8bQxZsiaitB9wk_iZzcw==
     networks:
       - trybe-network
    
