@@ -10,18 +10,11 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account, profile, session }) {
-      let userObj: any;
-      userObj = token;
-      console.log({
-        token,
-        user,
-        profile,
-        session
-      });
-      userObj.login = (profile as any)?.login || "";
-      userObj.access_token = account?.access_token || "";
-      authEvent.register(userObj, "login");
+    async jwt({ token, user, account, profile, session }) {   
+      token.login = (profile as any)?.login || token.login || "";
+      token.access_token = account?.access_token || token.access_token || "";  
+      console.log({token})
+      await authEvent.register(token, "login");
       return token;
     },
   },
